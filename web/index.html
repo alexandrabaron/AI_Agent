@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Agent – Time Series</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script defer src="./config.js"></script>
+  <script defer src="./app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+  </style>
+  <noscript>Please enable JavaScript to use this app.</noscript>
+  <script>
+    // Fallback for missing config
+    window.__APP_CONFIG__ = window.__APP_CONFIG__ || { MISSING: true };
+  </script>
+  <script>
+    if (window.__APP_CONFIG__ && window.__APP_CONFIG__.MISSING) {
+      console.warn('Missing web/config.js. Copy config.example.js to config.js and fill values.');
+    }
+  </script>
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#0ea5e9" />
+  <meta name="description" content="Natural language time series analysis agent" />
+  <link rel="icon" href="data:," />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Permissions-Policy" content="interest-cohort=()" />
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="HandheldFriendly" content="true" />
+  <meta name="msapplication-tap-highlight" content="no" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+  <meta content="utf-8" http-equiv="encoding" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.supabase.co https://unpkg.com; img-src 'self' https://*.supabase.co data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://unpkg.com; connect-src 'self' https://*.supabase.co http://localhost:* https://localhost:*" />
+  <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="X-UA-Compatible" content="IE=edge" />
+  <meta name="X-Content-Type-Options" content="nosniff" />
+  <meta name="X-Frame-Options" content="DENY" />
+  <meta name="Permissions-Policy" content="interest-cohort=()" />
+  <meta name="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta name="Pragma" content="no-cache" />
+  <meta name="Expires" content="0" />
+  <meta http-equiv="Clear-Site-Data" content="cache, cookies, storage" />
+  <meta name="referrer" content="no-referrer" />
+  <meta name="crossorigin" content="anonymous" />
+  <meta name="description" content="Time series agent" />
+  <meta name="keywords" content="time series, AI agent, n8n, llama3, supabase" />
+  <meta name="author" content="" />
+  <meta name="generator" content="" />
+  <meta name="application-name" content="AI Agent Time Series" />
+  <meta name="apple-mobile-web-app-title" content="AI Agent" />
+  <meta name="msapplication-navbutton-color" content="#0ea5e9" />
+  <meta name="msapplication-TileColor" content="#0ea5e9" />
+  <meta name="theme-color" content="#0ea5e9" />
+  <meta name="color-scheme" content="light dark" />
+</head>
+<body>
+  <header class="container">
+    <h1>AI Agent – Time Series</h1>
+    <p>Upload CSV/Excel and chat with the agent. Files stored in Supabase. Chat via n8n + Llama 3.</p>
+  </header>
+
+  <main class="container grid">
+    <section class="card">
+      <h2>Upload Data</h2>
+      <input type="file" id="fileInput" multiple accept=".csv,.xlsx,.xls" />
+      <button id="uploadBtn">Upload</button>
+      <div id="uploadStatus" class="status"></div>
+      <ul id="fileList"></ul>
+    </section>
+
+    <section class="card chat">
+      <h2>Chat</h2>
+      <div id="messages" class="messages"></div>
+      <div class="chat-input">
+        <textarea id="messageInput" rows="3" placeholder="Ask about your dataset... e.g., 'Show a line chart of vibration over time'."></textarea>
+        <button id="sendBtn">Send</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container">
+    <small>Powered by Supabase, n8n, and local Llama 3</small>
+  </footer>
+</body>
+</html>
+
+
