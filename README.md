@@ -176,20 +176,26 @@ Step 3 – Fetch Context (Optional)
 - Example GET: `{{SUPABASE_URL}}/rest/v1/chat_messages?session_id=eq.{{$json.sessionId}}&order=created_at.asc`
 - Headers: `apikey: {{SUPABASE_SERVICE_ROLE_KEY}}`, `Authorization: Bearer {{SUPABASE_SERVICE_ROLE_KEY}}`
 
-Step 4 – LLM Call (Local Llama 3)
-- Node: OpenAI (or HTTP Request)
-- Base URL: `http://localhost:11434/v1`
-- Model: `llama3`
-- API Key: `ollama` (if required)
+Step 4 – AI Agent Node
+- Node: AI Agent (n8n)
+- Model Provider: OpenAI-compatible
+  - Base URL: `http://localhost:11434/v1`
+  - Model: `llama3`
+  - API Key: `ollama` (or any stub if your server ignores it)
 - System Prompt (example):
 ```
-You are a time series analysis assistant. Tools (implemented in the workflow) provide:
-- read_tabular(url): dataframe preview and schema
-- summarize(): missing values, stats, correlations
-- plot(kind, x, y): returns a URL to an image chart
+You are a time series analysis assistant. You have access to tools implemented in this workflow:
+- read_tabular(url): returns a preview and inferred schema
+- summarize(): returns missing values, stats, correlations
+- plot(kind, x, y): returns a URL to an image chart stored in Supabase
 Always respond with JSON: { "text": string, "charts": [{"type": string, "url": string}], "code": string? }.
 ```
-- User message: include the user input and list of available files (names/paths).
+- Memory/Context: Optionally pass recent `chat_messages` (from Step 3) as conversation history.
+- Tools: Add Tool nodes and connect them to the AI Agent:
+  - Tool (Function or Python): "read_tabular" → fetch CSV/Excel via public/signed URL and return a small sample + column names
+  - Tool (Function or Python): "summarize" → compute basic stats and correlations
+  - Tool (Function/Python + HTTP Request): "plot" → generate PNG, upload to Supabase Storage (service role), return public URL
+- Output: Ensure the AI Agent returns a JSON object with keys `text`, `charts`, and optional `code`.
 
 Step 5 – Analysis / Plotting
 - Strategy A (Phase 1 simplicity): Bucket is Public → construct public file URLs to read CSVs directly in a Python/Code node.
